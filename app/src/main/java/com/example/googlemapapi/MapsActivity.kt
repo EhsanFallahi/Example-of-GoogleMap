@@ -11,6 +11,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -36,6 +37,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val perspoliceLatLng=LatLng(latitude,longitude)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(perspoliceLatLng,zoomLevel))
         map.addMarker(MarkerOptions().position(perspoliceLatLng))
+
+        setMapLongClick(map)
 
     }
 
@@ -63,4 +66,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             true
         }else ->super.onOptionsItemSelected(item)
     }
+
+    private fun setMapLongClick(map:GoogleMap)= map.setOnMapLongClickListener {
+        val snippet= String.format(
+            Locale.getDefault(),
+            "Lat:%1$.5f,Long:%2$.5f",
+            it.latitude,
+            it.longitude
+        )
+            map.addMarker(MarkerOptions().position(it)
+                .title("مکان شما")
+                .snippet(snippet)
+            )
+        }
+
 }
