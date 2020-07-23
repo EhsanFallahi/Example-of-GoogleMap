@@ -12,9 +12,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -38,11 +36,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val latitude=29.935775
         val longitude=52.891512
         //value of zoom level is between 1 - 20
-        val zoomLevel=15f
+        val zoomLevel=18f
+        val overlaySize=100f
         val perspoliceLatLng=LatLng(latitude,longitude)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(perspoliceLatLng,zoomLevel))
         map.addMarker(MarkerOptions().position(perspoliceLatLng))
+        val photoOverlay=GroundOverlayOptions()
+            .image(BitmapDescriptorFactory.fromResource(R.drawable.logo))
+            .position(perspoliceLatLng,overlaySize)
 
+        map.addGroundOverlay(photoOverlay)
         setMapLongClick(map)
         setPoiClick(map)
         setMapStyle(map)
@@ -84,6 +87,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             map.addMarker(MarkerOptions().position(it)
                 .title("مکان شما")
                 .snippet(snippet)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
             )
         }
 
