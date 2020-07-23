@@ -39,6 +39,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         map.addMarker(MarkerOptions().position(perspoliceLatLng))
 
         setMapLongClick(map)
+        setPoiClick(map)
 
     }
 
@@ -79,5 +80,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .snippet(snippet)
             )
         }
+
+    private fun setPoiClick(map:GoogleMap) {
+        GoogleMap.OnPoiClickListener {
+            val poiMarker = map.addMarker(
+                MarkerOptions()
+                    .position(it.latLng)
+                    .title(it.name)
+            )
+            poiMarker.showInfoWindow()
+        }
+    }
+
 
 }
