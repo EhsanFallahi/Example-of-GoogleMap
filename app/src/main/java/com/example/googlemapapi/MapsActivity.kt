@@ -1,7 +1,10 @@
 package com.example.googlemapapi
 
+import android.content.res.Resources
+import android.net.IpSecManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 
@@ -10,12 +13,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
+    private val TAG=MapsActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +45,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setMapLongClick(map)
         setPoiClick(map)
+        setMapStyle(map)
 
     }
 
@@ -89,6 +95,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     .title(it.name)
             )
             poiMarker.showInfoWindow()
+        }
+    }
+
+    private fun setMapStyle(map: GoogleMap){
+        try {
+            val success=map.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(this,R.raw.map_style)
+            )
+            if (!success){
+                Log.e(TAG,"style parsing failed")
+            }
+
+        }catch (e:Resources.NotFoundException){
+            Log.e(TAG,"cant find style . error:",e)
         }
     }
 
