@@ -1,5 +1,7 @@
 package com.example.googlemapapi
 
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.net.IpSecManager
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +9,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -14,12 +18,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import java.util.*
+import java.util.jar.Manifest
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private val TAG=MapsActivity::class.java.simpleName
-
+    private val REQUEST_LOCATION_PERMISSON=1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -49,6 +54,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setMapLongClick(map)
         setPoiClick(map)
         setMapStyle(map)
+        enableMyLocation()
 
     }
 
@@ -116,5 +122,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun isPermissonGranted():Boolean{
+        return ContextCompat.checkSelfPermission(
+            this,android.Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED
 
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun enableMyLocation(){
+        if(isPermissonGranted()){
+            map.isMyLocationEnabled=true
+        }else{
+            ActivityCompat.requestPermissions(this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSON)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode==REQUEST_LOCATION_PERMISSON){
+            if (grantResults.size>0 && (grantResults[0]==PackageManager.PERMISSION_GRANTED)){
+                enableMyLocation()
+            }
+        }
+    }
 }
